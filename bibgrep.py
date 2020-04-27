@@ -6,6 +6,8 @@ import os
 import re
 import nltk 
 import doi2pdf as d2p
+import textanalysis as ta
+
 
 def bib2csv(entries):
 	df = pd.DataFrame(entries)
@@ -112,7 +114,12 @@ if __name__== "__main__":
 
 	print(pandaDF[["confName","booktitle","doi"]])
 
-	#pandaDF.ID! doi not always entered
+	# pandaDF.ID! doi not always entered
 	#d2p.doi2pdf("10.1145/3173574.3173660")
 
 	d2p.scrapeFromDOIs(pandaDF["ID"])
+
+
+	# turn PDFs into text
+	#ta.pdf2text("pdfs/" + "10.1145/3173574.3173660".replace("/","--") + ".pdf")
+	ta.extractText()
