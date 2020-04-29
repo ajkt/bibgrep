@@ -14,12 +14,13 @@ Features
 > doi2pdf.py
 
 Features:
-Creates a pdf directory and scrapes PDFs from the ACM DL based on the selected bib entries' DOIs, with randomized delays for polite scraping (may only work until end of June while the DL is open, or within eduroam)
+Creates a pdf directory and scrapes PDFs from the ACM DL based on the selected bib entries' DOIs, with randomized delays for polite scraping (may only work until end of June while the DL is open, or within eduroam).
 
 > textanalysis.py
 
 Features:
-Raw text extraction from PDF, keeping content order despite two-column structure and separating ligatures. (Every now and then - i.e., 1 / 366 in my test) it can't deal with a PDF if it contains super fancy glyphs though ...) 
+Raw text extraction from PDF, keeping content order despite two-column structure and separating ligatures. (Every now and then - i.e., 1 / 366 in my test) it can't deal with a PDF if it contains super fancy glyphs though ...).
+Called as standalone: goes through all *.txt files in pdfs folder and creates a new *.csv containing all keyword occurrences (nltk concordances) for two keywords. 
 
 
 
