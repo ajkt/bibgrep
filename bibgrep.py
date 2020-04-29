@@ -123,3 +123,5 @@ if __name__== "__main__":
 	# turn PDFs into text
 	#ta.pdf2text("pdfs/" + "10.1145/3173574.3173660".replace("/","--") + ".pdf")
 	ta.extractText()
+
+	# test nltk: via python ./textanalysis.py

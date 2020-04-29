@@ -1,10 +1,12 @@
 import nltk
 import PyPDF2
-# import pdftotext
 import subprocess
 import unicodedata
 import html2text
 import os
+import pandas as pd
+import numpy
+
 
 
 # For specific PDF file: extracts raw text (despite two-column structure and ligatures; the latter are separated)
@@ -75,10 +77,6 @@ def pdf2text(pdfFile):
 
 	return
 
-# Undo hyphenation at line breaks:
-def noHyphenatedLineBreaks(textfile):
-
-	return
 
 def extractText():
 	countConverted = 0
@@ -110,3 +108,122 @@ def extractText():
 	print("Errors in files: ")
 	print(errorFiles)
 	return
+
+def concordanceInFile(keyword, nltkText):	
+	concordlist = nltkText.concordance_list(keyword, width=400)	
+	print(concordlist)
+	# print(type(concordlist))
+	#for line in concordlist:
+		#print("line")
+		#print(line)
+		#print("PRINTABLE")
+		#print(line[-1])
+		
+	return concordlist
+
+
+def nltktextify(textFileName):
+	
+	textFile = open(textFileName, "r")
+	text = textFile.read()
+	textFile.close()
+
+	tokens = nltk.word_tokenize(text.lower())
+	nltkText = nltk.Text(tokens)
+	return nltkText
+
+def commonContextsInFile(keyword, nltkText):
+
+	nltkText.common_contexts(keyword)
+	
+	return
+
+def grabConcords(concordlist):
+	mergedConcords = []
+	for line in concordlist:
+		mergedConcords.append(line[-1])
+	return mergedConcords
+	
+
+def perText(file):
+
+	return
+
+def summariseTxts(keywordList):
+
+	# build an overview, for each text: #occurrences of each keyword, concordance of each occurrence, length of text overall, ....
+
+	#for now: two keywords
+	columnNames = ["txt", "tokens", "kw1", "kw1Occurrences", "kw1Concordances", "kw2", "kw2Occurrences", "kw2Concordances"]
+	overviewDF = pd.DataFrame(columns=columnNames)
+
+	count = 0
+
+	files = os.listdir("pdfs")
+	for f in files:
+		if not f.endswith(".txt"):
+			continue
+		else:
+			print("found txt:")
+			print(f)
+		
+			testFile = "pdfs/" + f
+			thistext = nltktextify(testFile)
+			print(len(thistext.tokens))	
+			
+			concordlistone = concordanceInFile(keywordList[0], thistext)	
+			concordlisttwo = concordanceInFile(keywordList[1], thistext)
+
+			mergedConcords = grabConcords(concordlistone)	
+
+			row = []
+			row.append(testFile)
+			row.append(len(thistext.tokens))
+			row.append(keywordList[0])
+			row.append(len(mergedConcords))
+			row.append(mergedConcords)
+
+			row.append(keywordList[1])
+			mergedConcords = grabConcords(concordlisttwo)
+			row.append(len(mergedConcords))	
+			row.append(mergedConcords)
+	
+			print(row)
+	
+			rowDF = pd.DataFrame([row], columns = columnNames)
+			print(rowDF)
+
+			overviewDF = overviewDF.append(rowDF, ignore_index=True)
+
+	print(overviewDF)
+	overviewDF.to_csv("teeest.csv")
+
+	return
+	
+
+
+# main for testing
+if __name__ == "__main__":
+
+	# nltk.download("punkt")
+
+	keywordone = "testone"
+	keywordtwo = "testtwo"
+
+	# testFile = "test"
+	# thistext = nltktextify(testFile)
+	# print(len(thistext.tokens))	
+
+	#commonContextsInFile([keywordone, keywordtwo], thistext)
+	#thistext.similar(keywordone)
+	#thistext.dispersion_plot([keywordone])	
+
+	#frequentified = nltk.FreqDist(thistext)
+	#print(frequentified.most_common(15))
+
+	
+	# Build an overview, for each text:
+	summariseTxts([keywordone, keywordtwo])
+
+
+
