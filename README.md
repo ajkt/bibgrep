@@ -22,5 +22,7 @@ Features:
 Raw text extraction from PDF, keeping content order despite two-column structure and separating ligatures. (Every now and then - i.e., 1 / 366 in my test) it can't deal with a PDF if it contains super fancy glyphs though ...).
 Called as standalone: goes through all *.txt files in pdfs folder and creates a new *.csv containing all keyword occurrences (nltk concordances) for two keywords. 
 
+> bibmerge-uniqueify.py
 
-
+Features:
+Merges all bib files in the local space and creates a merged CSV file of the bib entries. Then checks for duplicates (by title, as databases don't always populate the DOI / ID / URL columns in the same way) and if it finds any, creates a second merged CSV without duplicates.
