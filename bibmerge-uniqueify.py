@@ -9,10 +9,6 @@ import doi2pdf as d2p
 import textanalysis as ta
 
 
-def bib2csv(entries):
-	df = pd.DataFrame(entries)
-	df.to_csv("merged.csv", index=False)
-	return
 
 def temporalOverview(df):
 	mostrecent = pd.to_numeric(df["year"]).max()
