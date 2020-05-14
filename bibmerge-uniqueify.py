@@ -9,6 +9,10 @@ import doi2pdf as d2p
 import textanalysis as ta
 
 
+def bib2csv(entries):
+	df = pd.DataFrame(entries)
+	df.to_csv("merged.csv", index=False)
+	return
 
 def temporalOverview(df):
 	mostrecent = pd.to_numeric(df["year"]).max()
@@ -115,20 +119,36 @@ if __name__== "__main__":
 	pandaDF.index += 1
 	pandaDF.to_csv("merged.csv")
 
-	# find duplicates (ignores first occurrence):
-	duplicates = pandaDF[pandaDF.duplicated(["title"])] 
-	print("\n checking for DUPLICATES by title:")
-	anyDuplicates = pandaDF.duplicated(["title"]).any()
+	pandaDF["titleLower"] = pandaDF.apply(lambda row: row.title.lower(), axis=1)
+	print(pandaDF[["title","titleLower"]])
+ 	
+	print("\n checking for DUPLICATES in currently most conservative measure: title regardless of capitalization AND year")
+	searchBy = ["titleLower", "year"] # ["title", "year"]
+	anyDuplicates = pandaDF.duplicated(searchBy).any()
+	theDuplicates = pandaDF[pandaDF.duplicated(searchBy)]
 	if anyDuplicates:
 		print("found some:")
-		print(duplicates[["year","title","author"]])
+		print(theDuplicates[["year","title","author"]].to_string())
 		
 		print("\n... creating second CSV without duplicates.")
-		pandaDFunique = pandaDF.drop_duplicates(subset = "title", keep = "first").reset_index(drop = True)
-		pandaDFunique.index += 1
-		pandaDFunique.to_csv("merged-no-duplicates.csv")
 	else:
 		print("found none.")
+
+	pandaDFunique = pandaDF.drop_duplicates(subset = searchBy, keep = "first").reset_index(drop = True)
+	pandaDFunique.index += 1
+	pandaDFunique.to_csv("merged-no-duplicates-conservative.csv")
+	
+
+	searchByPotentials = ["titleLower"]
+	anyDuplicates = pandaDFunique.duplicated(searchByPotentials).any()
+	potentialDuplicates = pandaDFunique[pandaDFunique.duplicated(searchByPotentials, keep = False)] # keep = false: mark ALL occurrences, not just any after first
+	if anyDuplicates:
+		print("\n... also found some more potential duplicates for manual checking:")
+		print(potentialDuplicates[["year", "title", "author"]])
+		potentialDuplicates.to_csv("identifiedAsMorePotentialDuplicates.csv")
+
+
+
 	
 	
 

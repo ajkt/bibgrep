@@ -25,4 +25,4 @@ Called as standalone: goes through all *.txt files in pdfs folder and creates a 
 > bibmerge-uniqueify.py
 
 Features:
-Merges all bib files in the local space and creates a merged CSV file of the bib entries. Then checks for duplicates (by title, as databases don't always populate the DOI / ID / URL columns in the same way) and if it finds any, creates a second merged CSV without duplicates.
+Merges all bib files in the local space and creates a merged CSV file of the bib entries. Then checks for duplicates using a first more conservative measure (by title regardless of capitalization and by year), as databases don't always populate the DOI / ID / URL columns in the same way) and creates a second merged CSV without these duplicates. Also creates another CSV to identify additional potential duplicates for manual checking based on a less conservative measure (here: title regardless of capitalization, but ignoring year).
